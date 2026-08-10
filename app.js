@@ -1,215 +1,264 @@
 /* =============================================
-   SUSHI KATANA — APP.JS
+   SUMSUSHI — APP.JS
    ============================================= */
 
 'use strict';
 
 // ─── Constants ───────────────────────────────
 const WA_NUMBER = '994559406018';
-const PAGE_SCROLL_MAP = {};   // page -> scrollY before leaving
+const PAGE_SCROLL_MAP = {};
 let currentPage = 'home';
 let currentModalProduct = null;
 let currentVacancy = null;
 let cart = [];
+
+// Single product image used for all menu items
+const PRODUCT_IMG = 'images/sushi-roll.jpg';
 
 // ─── DATA ─────────────────────────────────────
 
 const menuData = {
   sets: [
     {
-      id: 's1',
-      name: 'Set N1 — Super Təklif',
-      desc: '70 əd. müxtəlif suşi + 1L Coca-Cola pulsuz! Böyük yığıncaqlar üçün ideal seçim.',
-      price: 29,
-      weight: '70 əd. + 1L Cola',
-      img: 'images/set-n1.jpg',
-      badge: 'Super Təklif'
+      id: 'set1',
+      name: 'Kombo Set (90əd)',
+      desc: 'Filadelfiya roll (8əd), Bonita roll (8əd), Alaska roll (8əd), Çips roll (8əd), Spicy roll (8əd), Baked krab (10əd), Hot Chicken (10 əd), Hot Salmon (10 əd), Hot Tuna (10əd), Hot Krab (10əd), Soya sous (3əd), İmbir (3əd), Vasabi (3əd)',
+      price: 54,
+      weight: '90 əd.',
+      img: PRODUCT_IMG,
+      badge: 'Super Seçim'
     },
     {
-      id: 's2',
-      name: 'Set N3',
-      desc: '30 əd. müxtəlif suşi — California, Philadelphia, Hot Crab, Hot Salmon, Baked, Maki daxildir.',
-      price: 19,
-      weight: '30 əd.',
-      img: 'images/set-n3.jpg',
+      id: 'set2',
+      name: 'Big Set (116əd)',
+      desc: 'Filadelfiya roll (8əd), Bonita roll (8əd), Cheese roll (8əd), Çips roll (8əd), Kaliforniya roll (8əd), Filadelfiya Gril roll (8əd), Sake Maki (8əd), Baked krab (10əd), Hot Chicken (10əd), Hot Krab (10əd), Hot Tuna (10əd), Hot Salmon (10əd), Soya sous (3əd), İmbir (3əd), Vasabi (3əd)',
+      price: 69,
+      weight: '116 əd.',
+      img: PRODUCT_IMG,
+      badge: 'Ən Böyük'
+    },
+    {
+      id: 'set3',
+      name: 'Festival Set (64əd)',
+      desc: 'Havai roll (8əd), Kaliforniya roll (8əd), Filadelfiya roll (8əd), Baked Tuna (10əd), Hot Salmon (10 əd), Hot Krab (10əd), Hot Ebi (10əd), Soya sous (2əd), İmbir (2əd), Vasabi (2əd)',
+      price: 37,
+      weight: '64 əd.',
+      img: PRODUCT_IMG,
       badge: 'Populyar'
     },
     {
-      id: 's3',
-      name: 'Sushi Premium Set',
-      desc: 'Klassik Nigiri, Maki, California Roll — hər şey bir yerdə. Suşi sevənlər üçün ideal set.',
-      price: 29,
-      weight: '6 növ, hər birindən',
-      img: 'images/menu-hero.jpg',
-      badge: 'Klassik'
+      id: 'set4',
+      name: 'Friend Set (52əd)',
+      desc: 'Snerjiy roll (8əd), Bonita roll (8əd), Filadelfiya roll (8əd), Baked Tuna (10əd), Ebi Maki (8əd), Hot Tuna (10əd), Soya sous (2əd), İmbir (2əd), Vasabi (2əd)',
+      price: 39,
+      weight: '52 əd.',
+      img: PRODUCT_IMG
+    },
+    {
+      id: 'set5',
+      name: 'Salmon Set (42əd)',
+      desc: 'Filadelfiya gril roll (8əd), Filadelfiya shrib roll (8əd), Filadelfiya roll (8əd), Sake Maki (8əd), Baked Salmon (10əd), Soya sous (2əd), İmbir (2əd), Vasabi (2əd)',
+      price: 35,
+      weight: '42 əd.',
+      img: PRODUCT_IMG
+    },
+    {
+      id: 'set6',
+      name: 'Tokyo Set (50əd)',
+      desc: 'Alaska roll (8əd), Kaliforniya roll (8əd), Baked Tuna (10əd), Krab Çubuqları (4əd), Hot Tuna (10əd), Hot Krab (10əd), Soya sous (2əd), İmbir (2əd), Vasabi (2əd)',
+      price: 35,
+      weight: '50 əd.',
+      img: PRODUCT_IMG
+    },
+    {
+      id: 'set7',
+      name: 'Samuray Set (52əd)',
+      desc: 'Samuray roll (8əd), Havai roll (8əd), Spicy roll (8əd), Kani Maki (8əd), Hot Chicken (10əd), Hot Tuna (10əd), Soya sous (2əd), İmbir (2əd), Vasabi (2əd)',
+      price: 32,
+      weight: '52 əd.',
+      img: PRODUCT_IMG
+    },
+    {
+      id: 'set8',
+      name: 'Mini Set (36əd)',
+      desc: 'Cheese roll (8əd), Filadelfiya roll (8əd), Baked Krab (10əd), Hot Chicken (10əd), Soya sous (2əd), İmbir (2əd), Vasabi (2əd)',
+      price: 24,
+      weight: '36 əd.',
+      img: PRODUCT_IMG
     }
   ],
   rolls: [
     {
       id: 'r1',
-      name: 'California Roll',
-      desc: 'Krab əti, avokado, salatalıq, tobiko kürüsü ilə hazırlanmış klassik uramaki roll.',
-      price: 8,
+      name: 'Filadelfiya Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, qızıl balıq',
+      price: 10,
       weight: '8 əd.',
-      img: 'images/menu-hero.jpg'
+      img: PRODUCT_IMG
     },
     {
       id: 'r2',
-      name: 'Philadelphia Roll',
-      desc: 'Krem pendir, somon, avokado ilə hazırlanmış zəngin dadlı uramaki roll.',
-      price: 9,
+      name: 'Gril Filadelfiya Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, bişmiş qızıl balıq',
+      price: 10,
       weight: '8 əd.',
-      img: 'images/gallery1.jpg'
+      img: PRODUCT_IMG
     },
     {
       id: 'r3',
-      name: 'Hot Crab Roll',
-      desc: 'İsti qızardılmış krab içlikli, xüsusi Katana sousu ilə servis edilən roll.',
-      price: 8,
+      name: 'Kaliforniya Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, krab, tobiko',
+      price: 9,
       weight: '8 əd.',
-      img: 'images/set-n3.jpg'
+      img: PRODUCT_IMG
     },
     {
       id: 'r4',
-      name: 'Hot Salmon Roll',
-      desc: 'Qızardılmış somon içlikli, wasabi mayonezi ilə servis edilən isti roll.',
-      price: 8,
+      name: 'Ebi Kaliforniya Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, krevet, tobiko',
+      price: 10,
       weight: '8 əd.',
-      img: 'images/menu-hero.jpg'
+      img: PRODUCT_IMG
     },
     {
       id: 'r5',
-      name: 'Baked Roll',
-      desc: 'Fırında bişirilmiş, kremli pendir sousu ilə örtülmüş xüsusi Katana rollları.',
-      price: 9,
+      name: 'Sake Kaliforniya Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, lasos, tobiko',
+      price: 10,
       weight: '8 əd.',
-      img: 'images/gallery1.jpg'
+      img: PRODUCT_IMG
     },
     {
       id: 'r6',
-      name: 'Spicy Tuna Roll',
-      desc: 'Ədviyyatlı ton balığı, xiyar, sriracha mayonezi ilə hazırlanmış qızğın roll.',
+      name: 'Gril Kaliforniya Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, krab, tobiko',
       price: 9,
       weight: '8 əd.',
-      img: 'images/set-n3.jpg'
+      img: PRODUCT_IMG
     },
     {
       id: 'r7',
-      name: 'Dragon Roll',
-      desc: 'Karides tempura, avokado, unagi sousu ilə hazırlanmış vizual cəhətdən möhtəşəm roll.',
-      price: 11,
+      name: 'Alaska Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, qızıl balıq, küncüt',
+      price: 9,
       weight: '8 əd.',
-      img: 'images/menu-hero.jpg'
+      img: PRODUCT_IMG
     },
     {
       id: 'r8',
-      name: 'Rainbow Roll',
-      desc: 'Krab, avokado California rollu üzərinə somon, ton balığı, karides diləmləri ilə.',
-      price: 12,
+      name: 'Ebi Alaska Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, krevet, küncüt',
+      price: 9,
       weight: '8 əd.',
-      img: 'images/gallery1.jpg'
-    }
-  ],
-  nigiri: [
-    {
-      id: 'n1',
-      name: 'Somon Nigiri',
-      desc: 'Təzə Atlantik somonundan hazırlanmış, əl ilə yoğurulmuş pirinc üzərində nigiri.',
-      price: 5,
-      weight: '2 əd.',
-      img: 'images/menu-hero.jpg'
+      img: PRODUCT_IMG
     },
     {
-      id: 'n2',
-      name: 'Ton Balığı Nigiri',
-      desc: 'Premium Bluefin ton balığından hazırlanmış, xüsusi mari sousu ilə servis.',
-      price: 6,
-      weight: '2 əd.',
-      img: 'images/menu-hero.jpg'
+      id: 'r9',
+      name: 'Bonita Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, qızıl balıq, tuna',
+      price: 9,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
     },
     {
-      id: 'n3',
-      name: 'Karides Nigiri',
-      desc: 'Bişirilmiş böyük karides, pirinc üzərində incə nori ilə bağlanmış nigiri.',
-      price: 5,
-      weight: '2 əd.',
-      img: 'images/menu-hero.jpg'
+      id: 'r10',
+      name: 'Çips Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, toyuq, çips',
+      price: 8,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
     },
     {
-      id: 'n4',
-      name: 'Unagi Nigiri',
-      desc: 'Şirin-şor teriyaki sousu ilə şüyüdlənmiş tərəvəz balığı (unagi) nigiris.',
-      price: 7,
-      weight: '2 əd.',
-      img: 'images/menu-hero.jpg'
+      id: 'r11',
+      name: 'Sezar Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, toyuq, küncüt',
+      price: 8,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
     }
   ],
   maki: [
     {
       id: 'm1',
-      name: 'Maki Salmon',
-      desc: 'Təzə somon və nori dərinliyindən hazırlanmış sadə, lakin dadlı klassik maki rollları.',
-      price: 5,
-      weight: '10 əd.',
-      img: 'images/menu-hero.jpg'
+      name: 'Baked Maki Roll',
+      desc: 'Nori, düyü, xiyar, toyuq, baked sous',
+      price: 8,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
     },
     {
       id: 'm2',
-      name: 'Maki Ton Balığı',
-      desc: 'Premium ton balığı ilə hazırlanmış ənənəvi Yapon maki rollları.',
-      price: 5,
-      weight: '10 əd.',
-      img: 'images/menu-hero.jpg'
+      name: 'Kani Maki',
+      desc: 'Nori, düyü, xiyar, krab',
+      price: 8,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
     },
     {
       id: 'm3',
-      name: 'Maki Xiyar',
-      desc: 'Kappa maki — vegeterian seçimi, təzə xiyar ilə hazırlanmış yüngül maki rollları.',
-      price: 4,
-      weight: '10 əd.',
-      img: 'images/menu-hero.jpg'
+      name: 'Ebi Maki',
+      desc: 'Nori, düyü, xiyar, krevet',
+      price: 9,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
     },
     {
       id: 'm4',
-      name: 'Maki Avokado',
-      desc: 'Kremli avokado ilə hazırlanmış bitki əsaslı yüngül maki rollları.',
-      price: 4,
-      weight: '10 əd.',
-      img: 'images/menu-hero.jpg'
+      name: 'Sake Maki',
+      desc: 'Nori, düyü, xiyar, qızıl balıq',
+      price: 9,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
+    },
+    {
+      id: 'm5',
+      name: 'Kappa Maki',
+      desc: 'Nori, düyü, xiyar, küncüt',
+      price: 7,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
     }
   ],
-  drinks: [
+  hotrolls: [
     {
-      id: 'd1',
-      name: 'Coca-Cola',
-      desc: 'Klassik Coca-Cola — suşi ilə mükəmməl cütlük.',
-      price: 2,
-      weight: '0.33L',
-      img: 'images/set-n1.jpg'
+      id: 'h1',
+      name: 'Chicken Hot Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, toyuq, panko',
+      price: 10,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
     },
     {
-      id: 'd2',
-      name: 'Coca-Cola 1L',
-      desc: 'Böyük Coca-Cola, setlər üçün ideal seçim.',
-      price: 4,
-      weight: '1L',
-      img: 'images/set-n1.jpg'
+      id: 'h2',
+      name: 'Kani Hot Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, krab, panko',
+      price: 8,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
     },
     {
-      id: 'd3',
-      name: 'Yaşıl Çay',
-      desc: 'Ənənəvi Yapon yaşıl çayı — suşi ilə klassik kombinasiya.',
-      price: 3,
-      weight: '400ml',
-      img: 'images/menu-hero.jpg'
+      id: 'h3',
+      name: 'Ebi Hot Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, krevet, panko',
+      price: 9,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
     },
     {
-      id: 'd4',
-      name: 'Miso Şorba',
-      desc: 'Ənənəvi Yapon miso şorbasıı, tofu və dəniz yosunu ilə.',
-      price: 4,
-      weight: '350ml',
-      img: 'images/menu-hero.jpg'
+      id: 'h4',
+      name: 'Tuna Hot Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir, qızıl balıq, panko',
+      price: 9,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
+    },
+    {
+      id: 'h5',
+      name: 'Cheese Hot Roll',
+      desc: 'Nori, düyü, xiyar, krem pendir',
+      price: 8,
+      weight: '8 əd.',
+      img: PRODUCT_IMG
     }
   ]
 };
@@ -258,7 +307,7 @@ const vacanciesData = [
     salary: '800 – 1200 AZN',
     schedule: 'Dəyişən növbə (2/2)',
     requirements: 'Ən az 1 il suşi hazırlama təcrübəsi, gigiyena sertifikatı',
-    desc: 'Katana mütbəxinə peşəkar suşi ustad axtarırıq. Kreativlik, dəqiqlik və komanda ruhu vacibdir.',
+    desc: 'SumSushi mütbəxinə peşəkar suşi ustad axtarırıq. Kreativlik, dəqiqlik və komanda ruhu vacibdir.',
     duties: 'Menyu maddələrinin hazırlanması, freshness nəzarəti, müştəri sifarişlərinin icrasını'
   },
   {
@@ -301,7 +350,6 @@ const vacanciesData = [
 function showPage(pageId) {
   const oldPage = document.getElementById('page-' + currentPage);
   if (oldPage) {
-    // Save scroll position of current page
     PAGE_SCROLL_MAP[currentPage] = window.scrollY;
     oldPage.classList.remove('active');
   }
@@ -312,18 +360,15 @@ function showPage(pageId) {
   if (!newPage) return;
   newPage.classList.add('active');
 
-  // Update nav active state
   document.querySelectorAll('.nav-link').forEach(link => {
     link.classList.toggle('active', link.dataset.page === pageId);
   });
 
-  // Restore scroll position for the new page
   const savedScroll = PAGE_SCROLL_MAP[pageId] || 0;
   window.scrollTo({ top: savedScroll, behavior: 'instant' });
 }
 
 function goBack() {
-  // Save current scroll
   PAGE_SCROLL_MAP[currentPage] = window.scrollY;
   showPage('home');
 }
@@ -408,7 +453,6 @@ function renderCart() {
   emptyEl.style.display = isEmpty ? 'flex' : 'none';
   footerEl.style.display = isEmpty ? 'none' : 'block';
 
-  // Remove old items (not the empty notice)
   const existingItems = itemsEl.querySelectorAll('.cart-item');
   existingItems.forEach(el => el.remove());
 
@@ -416,7 +460,7 @@ function renderCart() {
     const div = document.createElement('div');
     div.className = 'cart-item';
     div.innerHTML = `
-      <img class="cart-item-img" src="${item.img}" alt="${escHtml(item.name)}" loading="lazy" onerror="this.src='images/menu-hero.jpg'" />
+      <img class="cart-item-img" src="${item.img}" alt="${escHtml(item.name)}" loading="lazy" onerror="this.src='images/sushi-roll.jpg'" />
       <div class="cart-item-info">
         <div class="cart-item-name">${escHtml(item.name)}</div>
         <div class="cart-item-price">${item.price * item.qty} AZN</div>
@@ -434,7 +478,7 @@ function renderCart() {
 function bumpCartCount() {
   const el = document.getElementById('cartCount');
   el.classList.remove('bump');
-  void el.offsetWidth; // reflow
+  void el.offsetWidth;
   el.classList.add('bump');
   setTimeout(() => el.classList.remove('bump'), 300);
 }
@@ -442,7 +486,7 @@ function bumpCartCount() {
 function sendOrder() {
   if (cart.length === 0) return;
 
-  let msg = '🍱 *YENİ SİFARİŞ — Sushi Katana*\n\n';
+  let msg = '🍱 *YENİ SİFARİŞ — SumSushi*\n\n';
   msg += '━━━━━━━━━━━━━━━━━━━━\n';
   cart.forEach((item, idx) => {
     msg += `${idx + 1}. ${item.name}\n   ${item.qty} × ${item.price} AZN = ${item.qty * item.price} AZN\n`;
@@ -477,7 +521,7 @@ function renderMenuGrids() {
       card.innerHTML = `
         <div class="menu-card-img">
           ${badgeHtml}
-          <img src="${item.img}" alt="${escHtml(item.name)}" loading="lazy" onerror="this.src='images/menu-hero.jpg'" />
+          <img src="${item.img}" alt="${escHtml(item.name)}" loading="lazy" onerror="this.src='images/sushi-roll.jpg'" />
         </div>
         <div class="menu-card-body">
           <div class="menu-card-name">${escHtml(item.name)}</div>
@@ -532,7 +576,7 @@ function closeProductModalBtn() {
 
 function renderFaq() {
   const list = document.getElementById('faqList');
-  faqData.forEach((item, i) => {
+  faqData.forEach((item) => {
     const el = document.createElement('div');
     el.className = 'faq-item';
     el.innerHTML = `
@@ -551,7 +595,6 @@ function renderFaq() {
 function toggleFaq(btn) {
   const item = btn.closest('.faq-item');
   const isOpen = item.classList.contains('open');
-  // Close all
   document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
   if (!isOpen) item.classList.add('open');
 }
@@ -611,7 +654,7 @@ function closeVacancyModalBtn() {
 
 function applyVacancy() {
   if (!currentVacancy) return;
-  const msg = `👋 *Vakansiyaya Müraciət — Sushi Katana*\n\n🔹 *Vəzifə:* ${currentVacancy.title}\n🔹 *İş rejimi:* ${currentVacancy.type}\n\nSalam! Bu vakansiya ilə maraqlanıram. Əlaqə saxlamaq istəyirəm.`;
+  const msg = `👋 *Vakansiyaya Müraciət — SumSushi*\n\n🔹 *Vəzifə:* ${currentVacancy.title}\n🔹 *İş rejimi:* ${currentVacancy.type}\n\nSalam! Bu vakansiya ilə maraqlanıram. Əlaqə saxlamaq istəyirəm.`;
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
 }
 
@@ -632,7 +675,7 @@ function submitReservation(e) {
   }
 
   const formattedDate = formatDate(date);
-  let msg = `📅 *REZERVASIYA — Sushi Katana*\n\n`;
+  let msg = `📅 *REZERVASIYA — SumSushi*\n\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━\n`;
   msg += `👤 *Ad, Soyad:* ${name}\n`;
   msg += `📞 *Telefon:* ${phone}\n`;
@@ -719,7 +762,6 @@ document.addEventListener('DOMContentLoaded', function() {
   renderVacancies();
   renderCart();
 
-  // Set min date for reservation to today
   const today = new Date().toISOString().split('T')[0];
   const resDate = document.getElementById('resDate');
   if (resDate) resDate.min = today;
